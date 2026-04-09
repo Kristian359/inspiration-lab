@@ -4,7 +4,7 @@ USE `footballapp`;
 --
 -- Host: localhost    Database: footballapp
 -- ------------------------------------------------------
--- Server version	8.0.43
+-- Server version	8.0.44
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -37,13 +37,28 @@ CREATE TABLE `admin` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `admin`
+-- Table structure for table `answers`
 --
 
-LOCK TABLES `admin` WRITE;
-/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
-/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `answers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `answers` (
+  `answers_id` int NOT NULL AUTO_INCREMENT,
+  `question_id` int NOT NULL,
+  `quiz_id` int NOT NULL,
+  `correct_answer` varchar(255) NOT NULL,
+  `wrong_answer_1` varchar(255) NOT NULL,
+  `wrong_answer_2` varchar(255) NOT NULL,
+  `wrong_answer_3` varchar(255) NOT NULL,
+  PRIMARY KEY (`answers_id`),
+  UNIQUE KEY `answers_id_UNIQUE` (`answers_id`),
+  KEY `fk_question_answer_idx` (`question_id`),
+  KEY `fk_quiz_answer_idx` (`quiz_id`),
+  CONSTRAINT `fk_question_answer` FOREIGN KEY (`question_id`) REFERENCES `questions` (`question_id`),
+  CONSTRAINT `fk_quiz_answer` FOREIGN KEY (`quiz_id`) REFERENCES `quizes` (`quiz_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `audit_log`
@@ -58,18 +73,11 @@ CREATE TABLE `audit_log` (
   `club_id` int NOT NULL,
   `winner` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`audit_log_id`),
-  UNIQUE KEY `audit_log_id_UNIQUE` (`audit_log_id`)
+  UNIQUE KEY `audit_log_id_UNIQUE` (`audit_log_id`),
+  KEY `fk_audit_log_user_collection_idx` (`user_collection_id`),
+  CONSTRAINT `fk_audit_log_user_collection` FOREIGN KEY (`user_collection_id`) REFERENCES `user_collection` (`user_collection_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `audit_log`
---
-
-LOCK TABLES `audit_log` WRITE;
-/*!40000 ALTER TABLE `audit_log` DISABLE KEYS */;
-/*!40000 ALTER TABLE `audit_log` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `club_tournaments`
@@ -85,18 +93,13 @@ CREATE TABLE `club_tournaments` (
   `name` varchar(255) DEFAULT NULL,
   `description` mediumtext,
   PRIMARY KEY (`club_tournament_id`),
-  UNIQUE KEY `club_tournament_id_UNIQUE` (`club_tournament_id`)
+  UNIQUE KEY `club_tournament_id_UNIQUE` (`club_tournament_id`),
+  KEY `fk_season_club_tournament_idx` (`season_id`),
+  KEY `fk_club_club_tournamet_idx` (`club_id`),
+  CONSTRAINT `fk_club_club_tournament` FOREIGN KEY (`club_id`) REFERENCES `clubs` (`club_id`),
+  CONSTRAINT `fk_season_club_tournament` FOREIGN KEY (`season_id`) REFERENCES `seasons` (`season_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `club_tournaments`
---
-
-LOCK TABLES `club_tournaments` WRITE;
-/*!40000 ALTER TABLE `club_tournaments` DISABLE KEYS */;
-/*!40000 ALTER TABLE `club_tournaments` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `clubs`
@@ -114,18 +117,13 @@ CREATE TABLE `clubs` (
   `foundation` int DEFAULT NULL,
   `description` mediumtext,
   PRIMARY KEY (`club_id`),
-  UNIQUE KEY `club_id_UNIQUE` (`club_id`)
+  UNIQUE KEY `club_id_UNIQUE` (`club_id`),
+  KEY `fk_league_club_idx` (`league_id`),
+  KEY `fk_formation_club_idx` (`formation_id`),
+  CONSTRAINT `fk_formation_club` FOREIGN KEY (`formation_id`) REFERENCES `formations` (`formation_id`),
+  CONSTRAINT `fk_league_club` FOREIGN KEY (`league_id`) REFERENCES `leagues` (`league_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `clubs`
---
-
-LOCK TABLES `clubs` WRITE;
-/*!40000 ALTER TABLE `clubs` DISABLE KEYS */;
-/*!40000 ALTER TABLE `clubs` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `formations`
@@ -143,15 +141,6 @@ CREATE TABLE `formations` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `formations`
---
-
-LOCK TABLES `formations` WRITE;
-/*!40000 ALTER TABLE `formations` DISABLE KEYS */;
-/*!40000 ALTER TABLE `formations` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `league_competitions`
 --
 
@@ -165,18 +154,13 @@ CREATE TABLE `league_competitions` (
   `name` varchar(255) DEFAULT NULL,
   `description` mediumtext,
   PRIMARY KEY (`league_competition_id`),
-  UNIQUE KEY `league_competition_id_UNIQUE` (`league_competition_id`)
+  UNIQUE KEY `league_competition_id_UNIQUE` (`league_competition_id`),
+  KEY `fk_league_league_competition_idx` (`league_id`),
+  KEY `fk_season_league_competition_idx` (`season_id`),
+  CONSTRAINT `fk_league_league_competition` FOREIGN KEY (`league_id`) REFERENCES `leagues` (`league_id`),
+  CONSTRAINT `fk_season_league_competition` FOREIGN KEY (`season_id`) REFERENCES `seasons` (`season_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `league_competitions`
---
-
-LOCK TABLES `league_competitions` WRITE;
-/*!40000 ALTER TABLE `league_competitions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `league_competitions` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `leagues`
@@ -194,18 +178,50 @@ CREATE TABLE `leagues` (
   `description` mediumtext,
   PRIMARY KEY (`league_id`),
   UNIQUE KEY `league_id_UNIQUE` (`league_id`),
-  UNIQUE KEY `season_id_UNIQUE` (`season_id`)
+  UNIQUE KEY `season_id_UNIQUE` (`season_id`),
+  CONSTRAINT `fk_season_league` FOREIGN KEY (`season_id`) REFERENCES `seasons` (`season_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `leagues`
+-- Table structure for table `nation_clubs`
 --
 
-LOCK TABLES `leagues` WRITE;
-/*!40000 ALTER TABLE `leagues` DISABLE KEYS */;
-/*!40000 ALTER TABLE `leagues` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `nation_clubs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `nation_clubs` (
+  `nation_club_id` int NOT NULL AUTO_INCREMENT,
+  `formation_id` int NOT NULL,
+  `player_id` int NOT NULL,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`nation_club_id`),
+  UNIQUE KEY `nation_club_id_UNIQUE` (`nation_club_id`),
+  KEY `fk_formation_nation_club_idx` (`formation_id`),
+  KEY `fk_player_nation_club_idx` (`player_id`),
+  CONSTRAINT `fk_formation_nation_club` FOREIGN KEY (`formation_id`) REFERENCES `formations` (`formation_id`),
+  CONSTRAINT `fk_player_nation_club` FOREIGN KEY (`player_id`) REFERENCES `players` (`player_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `nation_competitions`
+--
+
+DROP TABLE IF EXISTS `nation_competitions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `nation_competitions` (
+  `nation_competition_id` int NOT NULL AUTO_INCREMENT,
+  `nation_club_id` int NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `description` mediumtext,
+  PRIMARY KEY (`nation_competition_id`),
+  UNIQUE KEY `nation_competition_id_UNIQUE` (`nation_competition_id`),
+  KEY `fk_nation_club_nation_competition_idx` (`nation_club_id`),
+  CONSTRAINT `fk_nation_club_nation_competition` FOREIGN KEY (`nation_club_id`) REFERENCES `nation_clubs` (`nation_club_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `packs`
@@ -225,13 +241,32 @@ CREATE TABLE `packs` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `packs`
+-- Table structure for table `players`
 --
 
-LOCK TABLES `packs` WRITE;
-/*!40000 ALTER TABLE `packs` DISABLE KEYS */;
-/*!40000 ALTER TABLE `packs` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `players`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `players` (
+  `player_id` int NOT NULL AUTO_INCREMENT,
+  `club_id` int NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `status` varchar(45) DEFAULT NULL,
+  `career_description` mediumtext,
+  `age` int DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `rating` varchar(45) DEFAULT NULL,
+  `shooting` varchar(45) DEFAULT NULL,
+  `dribbling` varchar(45) DEFAULT NULL,
+  `defending` varchar(45) DEFAULT NULL,
+  `speed` varchar(45) DEFAULT NULL,
+  `passing` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`player_id`),
+  UNIQUE KEY `player_id_UNIQUE` (`player_id`),
+  KEY `fk_players_clubs_idx` (`club_id`),
+  CONSTRAINT `fk_players_clubs` FOREIGN KEY (`club_id`) REFERENCES `clubs` (`club_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `playerspacks`
@@ -246,18 +281,13 @@ CREATE TABLE `playerspacks` (
   `player_id` int NOT NULL,
   `odds` int NOT NULL,
   PRIMARY KEY (`player_pack_id`),
-  UNIQUE KEY `player_pack_id_UNIQUE` (`player_pack_id`)
+  UNIQUE KEY `player_pack_id_UNIQUE` (`player_pack_id`),
+  KEY `fk_pack_player_pack_idx` (`pack_id`),
+  KEY `fk_player_player_pack_idx` (`player_id`),
+  CONSTRAINT `fk_pack_player_pack` FOREIGN KEY (`pack_id`) REFERENCES `packs` (`pack_id`),
+  CONSTRAINT `fk_player_player_pack` FOREIGN KEY (`player_id`) REFERENCES `players` (`player_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `playerspacks`
---
-
-LOCK TABLES `playerspacks` WRITE;
-/*!40000 ALTER TABLE `playerspacks` DISABLE KEYS */;
-/*!40000 ALTER TABLE `playerspacks` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `questions`
@@ -275,15 +305,6 @@ CREATE TABLE `questions` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `questions`
---
-
-LOCK TABLES `questions` WRITE;
-/*!40000 ALTER TABLE `questions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `questions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `quizes`
 --
 
@@ -295,18 +316,11 @@ CREATE TABLE `quizes` (
   `question_id` int NOT NULL,
   `quiz_date` datetime DEFAULT NULL,
   PRIMARY KEY (`quiz_id`),
-  UNIQUE KEY `quiz_id_UNIQUE` (`quiz_id`)
+  UNIQUE KEY `quiz_id_UNIQUE` (`quiz_id`),
+  KEY `fk_question_quiz_idx` (`question_id`),
+  CONSTRAINT `fk_question_quiz` FOREIGN KEY (`question_id`) REFERENCES `questions` (`question_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `quizes`
---
-
-LOCK TABLES `quizes` WRITE;
-/*!40000 ALTER TABLE `quizes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `quizes` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `seasons`
@@ -321,15 +335,6 @@ CREATE TABLE `seasons` (
   PRIMARY KEY (`season_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `seasons`
---
-
-LOCK TABLES `seasons` WRITE;
-/*!40000 ALTER TABLE `seasons` DISABLE KEYS */;
-/*!40000 ALTER TABLE `seasons` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user`
@@ -353,15 +358,6 @@ CREATE TABLE `user` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user`
---
-
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `user_collection`
 --
 
@@ -373,18 +369,56 @@ CREATE TABLE `user_collection` (
   `user_id` int NOT NULL,
   `player_id` int NOT NULL,
   PRIMARY KEY (`user_collection_id`),
-  UNIQUE KEY `user_collection_id_UNIQUE` (`user_collection_id`)
+  UNIQUE KEY `user_collection_id_UNIQUE` (`user_collection_id`),
+  KEY `fk_user_user_collection_idx` (`user_id`),
+  KEY `fk_player_user_collection_idx` (`player_id`),
+  CONSTRAINT `fk_player_user_collection` FOREIGN KEY (`player_id`) REFERENCES `players` (`player_id`),
+  CONSTRAINT `fk_user_user_collection` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user_collection`
+-- Table structure for table `user_requests`
 --
 
-LOCK TABLES `user_collection` WRITE;
-/*!40000 ALTER TABLE `user_collection` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_collection` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `user_requests`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_requests` (
+  `user_requests_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `admin_id` int NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `description` mediumtext,
+  `status` varchar(255) NOT NULL,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`user_requests_id`),
+  UNIQUE KEY `user_requests_id_UNIQUE` (`user_requests_id`),
+  KEY `fk_user_user_request_idx` (`user_id`),
+  KEY `fk_admin_user_request` (`admin_id`),
+  CONSTRAINT `fk_admin_user_request` FOREIGN KEY (`admin_id`) REFERENCES `admin` (`admin_id`),
+  CONSTRAINT `fk_user_user_request` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user_team`
+--
+
+DROP TABLE IF EXISTS `user_team`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_team` (
+  `user_team_id` int NOT NULL AUTO_INCREMENT,
+  `user_collection_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `formation` varchar(255) NOT NULL,
+  PRIMARY KEY (`user_team_id`),
+  UNIQUE KEY `user_team_id_UNIQUE` (`user_team_id`),
+  KEY `fk_user_collection_user_team_idx` (`user_collection_id`),
+  CONSTRAINT `fk_user_collection_user_team` FOREIGN KEY (`user_collection_id`) REFERENCES `user_collection` (`user_collection_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -395,4 +429,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-07 18:10:56
+-- Dump completed on 2026-04-09 23:13:49
