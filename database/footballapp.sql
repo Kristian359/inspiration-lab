@@ -254,7 +254,7 @@ CREATE TABLE `players` (
   `status` varchar(45) DEFAULT NULL,
   `career_description` mediumtext,
   `age` int DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL,
+  `image` varchar(255) DEFAULT '/img/default_player.png',
   `rating` varchar(45) DEFAULT NULL,
   `shooting` varchar(45) DEFAULT NULL,
   `dribbling` varchar(45) DEFAULT NULL,
